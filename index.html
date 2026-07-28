@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HYDRELON | Pure Water. Clean Air. Better Life.</title>
+    <meta name="description" content="HYDRELON — premium water filters, air purifiers, vitamin shower heads and lens care. Inspired by nature, purified by technology.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hydrelon: {
+                            dark: '#0D1B2A',
+                            blue: '#1167B1',
+                            cyan: '#00B5D8',
+                            green: '#22C55E',
+                            purple: '#8A6CFF',
+                            light: '#F2F4F7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --hydrelon-dark: #0D1B2A;
+            --hydrelon-blue: #1167B1;
+            --hydrelon-cyan: #00B5D8;
+            --hydrelon-purple: #8A6CFF;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #F8FAFC;
+            color: #0D1B2A;
+            overflow-x: hidden;
+        }
+
+        /* WebGL Water Canvas Background */
+        #water-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* Logo Animations */
+        .logo-droplet {
+            transform-origin: top center;
+            animation: dropletFall 3s infinite ease-in-out;
+        }
+        @keyframes dropletFall {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+            50% { transform: translateY(4px) scale(1.1); opacity: 0.8; }
+        }
+
+        .logo-bubble { opacity: 0; animation: bubblePop 2.5s infinite ease-out; }
+        .logo-bubble:nth-of-type(1) { animation-delay: 0s; }
+        .logo-bubble:nth-of-type(2) { animation-delay: 0.8s; }
+        .logo-bubble:nth-of-type(3) { animation-delay: 1.6s; }
+        @keyframes bubblePop {
+            0% { transform: translateY(0) scale(0); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0; }
+            100% { transform: translateY(-20px) scale(1.2); opacity: 0; }
+        }
+
+        /* Loader draw-on stroke */
+        .draw-path {
+            stroke-dasharray: 300;
+            stroke-dashoffset: 300;
+            animation: drawLogo 1.6s ease forwards;
+        }
+        @keyframes drawLogo { to { stroke-dashoffset: 0; } }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .glass-dark {
+            background: rgba(13, 27, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Product Cards */
+        .product-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(17, 103, 177, 0.25);
+        }
+
+        /* Floating Animation */
+        .float-anim { animation: float 6s ease-in-out infinite; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Underline Animation */
+        .hover-underline-animation { display: inline-block; position: relative; }
+        .hover-underline-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--hydrelon-cyan);
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        .hover-underline-animation:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* Tab Active State */
+        .tab-btn.active {
+            background-color: var(--hydrelon-blue);
+            color: white;
+            box-shadow: 0 10px 25px -5px rgba(17, 103, 177, 0.4);
+        }
+        .tab-btn.active p { color: rgba(255,255,255,0.7); }
+
+        /* Cart Drawer */
+        .cart-drawer {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .cart-drawer.open { transform: translateX(0); }
+
+        /* Marquee */
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 28s linear infinite;
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* Horizontal showcase panels */
+        .showcase-panel {
+            min-width: 100vw;
+            min-height: calc(100vh - 90px);
+        }
+
+        /* Bubbles rising in dark sections */
+        .bubble-field span {
+            position: absolute;
+            bottom: -40px;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(0,181,216,0.15));
+            animation: rise linear infinite;
+        }
+        @keyframes rise {
+            0% { transform: translateY(0) scale(0.6); opacity: 0; }
+            10% { opacity: 0.7; }
+            100% { transform: translateY(-110vh) scale(1.1); opacity: 0; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: var(--hydrelon-blue); border-radius: 4px; }
+
+        /* Loader */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: #0D1B2A;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+        }
+
+        /* Scroll progress bar */
+        #scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(to right, var(--hydrelon-blue), var(--hydrelon-cyan));
+            z-index: 60;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-hydrelon-cyan selection:text-white">
+
+    <div id="scroll-progress"></div>
+
+    <!-- Loader -->
+    <div id="loader" class="loader-overlay">
+        <div class="text-center">
+            <svg width="120" height="120" viewBox="0 0 100 100" class="mx-auto mb-4">
+                <path d="M30,20 L30,80 L50,80 L50,55 C50,55 70,55 70,35 C70,15 50,15 50,15 L30,15" fill="none" stroke="url(#logoGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="draw-path"/>
+                <circle cx="65" cy="70" r="6" fill="#00B5D8" class="logo-droplet"/>
+                <defs>
+                    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#1167B1;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#00B5D8;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <h2 class="text-white text-xl font-bold tracking-widest">HYDRELON</h2>
+            <p class="text-hydrelon-cyan text-[0.65rem] tracking-[0.3em] uppercase mt-2">Pure Water. Clean Air. Better Life.</p>
+        </div>
+    </div>
+
+    <!-- Three.js Water Background -->
+    <canvas id="water-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass rounded-2xl px-6 py-3 flex justify-between items-center shadow-lg">
+                <a href="#" class="flex items-center gap-3 group">
+                    <svg width="46" height="46" viewBox="0 0 100 100" class="transition-transform group-hover:scale-110">
+                        <path d="M25,15 L25,85 L48,85 L48,55 C48,55 72,55 72,30 C72,10 48,10 48,10 L25,10" fill="none" stroke="url(#navLogoGrad)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="68" cy="75" r="7" fill="#00B5D8" class="logo-droplet"/>
+                        <circle cx="80" cy="60" r="3" fill="#8A6CFF" class="logo-bubble"/>
+                        <circle cx="85" cy="75" r="2" fill="#00B5D8" class="logo-bubble"/>
+                        <circle cx="88" cy="52" r="2" fill="#1167B1" class="logo-bubble"/>
+                        <defs>
+                            <linearGradient id="navLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1167B1;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#00B5D8;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div>
+                        <span class="text-2xl font-bold tracking-wider text-hydrelon-dark block leading-none">HYDRELON</span>
+                        <span class="text-[0.6rem] tracking-[0.2em] text-hydrelon-blue uppercase">Pure Water. Clean Air.</span>
+                    </div>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-8 font-medium text-sm">
+                    <a href="#products" class="hover-underline-animation text-hydrelon-dark hover:text-hydrelon-blue transition-colors">Products</a>
+                    <a href="#technology" class="hover-underline-animation text-hydrelon-dark hover:text-hydrelon-blue transition-colors">Technology</a>
+                    <a href="#benefits" class="hover-underline-animation text-hydrelon-dark hover:text-hydrelon-blue transition-colors">Benefits</a>
+                    <a href="#about" class="hover-underline-animation text-hydrelon-dark hover:text-hydrelon-blue transition-colors">About</a>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button id="cart-btn" class="relative p-2 rounded-full hover:bg-hydrelon-light transition-colors group" aria-label="Cart">
+                        <i class="fa-solid fa-cart-shopping text-hydrelon-dark text-lg group-hover:text-hydrelon-blue transition-colors"></i>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-hydrelon-cyan text-white text-xs w-5 h-5 rounded-full flex items-center justify-center opacity-0 transition-opacity">0</span>
+                    </button>
+                    <button id="mobile-menu-btn" class="lg:hidden p-2 text-hydrelon-dark" aria-label="Menu">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                    <a href="#contact" class="hidden lg:inline-flex px-6 py-2.5 bg-hydrelon-dark text-white rounded-full text-sm font-semibold hover:bg-hydrelon-blue transition-all hover:shadow-lg hover:-translate-y-0.5">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 bg-white/95 backdrop-blur-xl transform translate-x-full transition-transform duration-300 flex flex-col justify-center items-center gap-8 lg:hidden">
+        <button id="close-menu" class="absolute top-8 right-8 text-hydrelon-dark text-3xl" aria-label="Close menu">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <a href="#products" class="text-2xl font-bold text-hydrelon-dark hover:text-hydrelon-blue mobile-link">Products</a>
+        <a href="#technology" class="text-2xl font-bold text-hydrelon-dark hover:text-hydrelon-blue mobile-link">Technology</a>
+        <a href="#benefits" class="text-2xl font-bold text-hydrelon-dark hover:text-hydrelon-blue mobile-link">Benefits</a>
+        <a href="#about" class="text-2xl font-bold text-hydrelon-dark hover:text-hydrelon-blue mobile-link">About</a>
+        <a href="#contact" class="text-2xl font-bold text-hydrelon-blue mobile-link">Contact</a>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black/30 z-[60] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="cart-drawer" class="cart-drawer fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[70] shadow-2xl flex flex-col">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-hydrelon-dark text-white">
+            <h3 class="text-xl font-bold">Your Cart</h3>
+            <button id="close-cart" class="text-white hover:text-hydrelon-cyan transition-colors" aria-label="Close cart"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <div class="text-center text-gray-400 mt-10">
+                <i class="fa-solid fa-basket-shopping text-4xl mb-3"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="p-6 border-t border-gray-100 bg-gray-50">
+            <div class="flex justify-between mb-4 text-lg font-bold text-hydrelon-dark">
+                <span>Total</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button class="w-full py-3 bg-hydrelon-blue text-white rounded-xl font-bold hover:bg-hydrelon-dark transition-colors">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid lg:grid-cols-2 gap-12 items-center">
+            <div class="z-10 hero-content">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 border border-hydrelon-cyan/20 text-hydrelon-blue text-sm font-semibold mb-6 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-hydrelon-cyan animate-pulse"></span>
+                    Next-Generation Purification Technology
+                </div>
+                <h1 class="text-5xl lg:text-7xl font-extrabold leading-tight mb-6 text-hydrelon-dark">
+                    Inspired by <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-hydrelon-blue to-hydrelon-cyan">Nature.</span><br>
+                    Purified by <span class="relative inline-block">
+                        Technology.
+                        <svg class="absolute w-full h-3 -bottom-1 left-0 text-hydrelon-cyan" viewBox="0 0 100 10" preserveAspectRatio="none">
+                            <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="3" fill="none" />
+                        </svg>
+                    </span>
+                </h1>
+                <p class="text-lg text-gray-600 mb-8 max-w-lg leading-relaxed">
+                    Discover healthy water, clean air and a vitamin-infused shower experience with HYDRELON. Elevate your everyday life with premium filtration technology.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#products" class="px-8 py-4 bg-gradient-to-r from-hydrelon-blue to-hydrelon-cyan text-white rounded-full font-bold shadow-lg shadow-hydrelon-blue/30 hover:shadow-xl hover:-translate-y-1 transition-all">
+                        Explore Products
+                    </a>
+                    <button id="play-video" class="px-8 py-4 bg-white text-hydrelon-dark border border-gray-200 rounded-full font-bold hover:bg-gray-50 hover:border-hydrelon-cyan transition-all flex items-center gap-2 group">
+                        <i class="fa-solid fa-play text-hydrelon-cyan group-hover:scale-110 transition-transform"></i> Watch Video
+                    </button>
+                </div>
+
+                <div class="mt-12 flex items-center gap-6">
+                    <div class="flex -space-x-3">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=64&h=64" class="w-10 h-10 rounded-full border-2 border-white" alt="Customer">
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=64&h=64" class="w-10 h-10 rounded-full border-2 border-white" alt="Customer">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=64&h=64" class="w-10 h-10 rounded-full border-2 border-white" alt="Customer">
+                    </div>
+                    <div>
+                        <div class="flex text-yellow-400 text-sm">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-sm text-gray-500">10,000+ Happy Customers</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative z-10 flex justify-center hero-visual">
+                <div class="relative float-anim">
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] lg:w-[550px] lg:h-[550px] rounded-full border border-hydrelon-cyan/20 animate-[spin_20s_linear_infinite]"></div>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] lg:w-[480px] lg:h-[480px] rounded-full border border-hydrelon-blue/10 animate-[spin_15s_linear_infinite_reverse]"></div>
+
+                    <img src="https://images.unsplash.com/photo-1624958723474-2e36eddca147?auto=format&fit=crop&w=600&q=80"
+                         alt="Hydrelon Water Filter"
+                         class="relative z-10 w-[300px] lg:w-[420px] drop-shadow-2xl rounded-3xl"
+                         style="mask-image: linear-gradient(to bottom, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);">
+
+                    <div class="absolute top-10 -left-10 glass px-4 py-3 rounded-xl shadow-lg animate-[float_4s_ease-in-out_infinite]">
+                        <p class="text-xs text-gray-500 uppercase font-bold">Purification Rate</p>
+                        <p class="text-2xl font-bold text-hydrelon-blue">99.9%</p>
+                    </div>
+                    <div class="absolute bottom-20 -right-5 glass px-4 py-3 rounded-xl shadow-lg animate-[float_5s_ease-in-out_infinite_1s]">
+                        <p class="text-xs text-gray-500 uppercase font-bold">Membrane</p>
+                        <p class="text-2xl font-bold text-hydrelon-cyan">RO+UV</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll hint -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-hydrelon-blue/60 text-2xl animate-bounce">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Marquee Tagline -->
+    <div class="py-6 bg-hydrelon-dark overflow-hidden relative">
+        <div class="marquee-track text-white/80 font-extrabold text-2xl lg:text-4xl tracking-wider uppercase whitespace-nowrap">
+            <span class="mx-8">Pure Water</span><span class="text-hydrelon-cyan mx-2">•</span>
+            <span class="mx-8">Clean Air</span><span class="text-hydrelon-purple mx-2">•</span>
+            <span class="mx-8">Better Life</span><span class="text-hydrelon-blue mx-2">•</span>
+            <span class="mx-8">Superior Filtration</span><span class="text-hydrelon-green mx-2">•</span>
+            <span class="mx-8">Healthy Living</span><span class="text-hydrelon-cyan mx-2">•</span>
+            <span class="mx-8">Pure Water</span><span class="text-hydrelon-cyan mx-2">•</span>
+            <span class="mx-8">Clean Air</span><span class="text-hydrelon-purple mx-2">•</span>
+            <span class="mx-8">Better Life</span><span class="text-hydrelon-blue mx-2">•</span>
+            <span class="mx-8">Superior Filtration</span><span class="text-hydrelon-green mx-2">•</span>
+            <span class="mx-8">Healthy Living</span><span class="text-hydrelon-cyan mx-2">•</span>
+        </div>
+    </div>
+
+    <!-- Brand Purpose / Categories -->
+    <section id="about" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <span class="text-hydrelon-blue font-bold tracking-widest uppercase text-sm">Brand Purpose</span>
+                <h2 class="text-3xl lg:text-5xl font-bold mt-3 text-hydrelon-dark">"Inspired by nature, purified by technology."</h2>
+                <p class="text-gray-500 mt-4 max-w-2xl mx-auto">Six product families, one mission — bringing purity into every corner of your home.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 1 Water Filters -->
+                <div class="product-card group bg-white rounded-3xl p-8 shadow-xl shadow-hydrelon-blue/5 border border-gray-100 relative overflow-hidden scroll-reveal">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-hydrelon-blue/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+                    <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-6 text-hydrelon-blue text-3xl">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-hydrelon-dark">Water Filters</h3>
+                    <p class="text-gray-500 mb-6">Healthy water, healthier living. Crystal-clean water from every tap in your home.</p>
+                    <img src="https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=400&q=80" alt="Water Filter" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-blue-50/50 to-transparent">
+                </div>
+
+                <!-- 2 Air Filters -->
+                <div class="product-card group bg-white rounded-3xl p-8 shadow-xl shadow-hydrelon-blue/5 border border-gray-100 relative overflow-hidden scroll-reveal">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-hydrelon-cyan/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+                    <div class="w-16 h-16 rounded-2xl bg-cyan-50 flex items-center justify-center mb-6 text-hydrelon-cyan text-3xl">
+                        <i class="fa-solid fa-wind"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-hydrelon-dark">Air Filters</h3>
+                    <p class="text-gray-500 mb-6">Clean air, fresher breathing. Renew your indoor air with true HEPA filtration.</p>
+                    <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=400&q=80" alt="Air Purifier" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-cyan-50/50 to-transparent">
+                </div>
+
+                <!-- 3 Vitamin Shower Heads -->
+                <div class="product-card group bg-white rounded-3xl p-8 shadow-xl shadow-hydrelon-purple/5 border border-gray-100 relative overflow-hidden scroll-reveal">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-hydrelon-purple/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+                    <div class="w-16 h-16 rounded-2xl bg-purple-50 flex items-center justify-center mb-6 text-hydrelon-purple text-3xl">
+                        <i class="fa-solid fa-shower"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-hydrelon-dark">Vitamin Shower Heads</h3>
+                    <p class="text-gray-500 mb-6">A refreshing shower infused with vitamins C, E &amp; B5 — caring for skin and hair.</p>
+                    <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80" alt="Vitamin Shower Head" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-purple-50/50 to-transparent">
+                </div>
+
+                <!-- 4 Eyeglass Lens Solution -->
+                <div class="product-card group bg-white rounded-3xl p-8 shadow-xl shadow-hydrelon-blue/5 border border-gray-100 relative overflow-hidden scroll-reveal">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-hydrelon-blue/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+                    <div class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mb-6 text-hydrelon-blue text-3xl">
+                        <i class="fa-solid fa-glasses"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-hydrelon-dark">Eyeglass Lens Solution</h3>
+                    <p class="text-gray-500 mb-6">Clearer lenses, gentle daily care. Cleans, rinses and moisturizes all lens types.</p>
+                    <img src="https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=400&q=80" alt="Lens Solution" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-blue-50/50 to-transparent">
+                </div>
+
+                <!-- 5 Eyeglass Cleaning Cloths -->
+                <div class="product-card group bg-white rounded-3xl p-8 shadow-xl shadow-hydrelon-cyan/5 border border-gray-100 relative overflow-hidden scroll-reveal">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-hydrelon-cyan/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+                    <div class="w-16 h-16 rounded-2xl bg-cyan-50 flex items-center justify-center mb-6 text-hydrelon-cyan text-3xl">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-hydrelon-dark">Eyeglass Cleaning Cloths</h3>
+                    <p class="text-gray-500 mb-6">Soft microfiber care for spotless vision — scratch-free, streak-free clarity.</p>
+                    <img src="https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&w=400&q=80" alt="Microfiber Cloth" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-cyan-50/50 to-transparent">
+                </div>
+
+                <!-- 6 Refrigerator Water Filters -->
+                <div class="product-card group bg-white rounded-3xl p-8 shadow-xl shadow-hydrelon-green/5 border border-gray-100 relative overflow-hidden scroll-reveal">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-hydrelon-green/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150"></div>
+                    <div class="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center mb-6 text-hydrelon-green text-3xl">
+                        <i class="fa-solid fa-snowflake"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-hydrelon-dark">Refrigerator Water Filters</h3>
+                    <p class="text-gray-500 mb-6">Pure, great-tasting water and ice. Reduces chlorine, taste &amp; odor, lead and more.</p>
+                    <img src="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=400&q=80" alt="Refrigerator Filter" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-green-50/50 to-transparent">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="technology" class="py-24 bg-hydrelon-dark text-white relative overflow-hidden">
+        <div class="bubble-field absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="scroll-reveal">
+                    <span class="text-hydrelon-cyan font-bold tracking-widest uppercase text-sm">Advanced Technology</span>
+                    <h2 class="text-3xl lg:text-5xl font-bold mt-3 mb-6">6-Stage Smart Filtration System</h2>
+                    <p class="text-gray-300 mb-8 leading-relaxed">
+                        HYDRELON's patented filter technology removes 99.9% of chlorine, lead, bacteria and microplastics from your water while preserving beneficial minerals.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4 scroll-reveal">
+                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-hydrelon-cyan shrink-0">
+                                <i class="fa-solid fa-filter"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Sediment Filter</h4>
+                                <p class="text-sm text-gray-400">Captures visible contaminants like rust, sand and lint.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 scroll-reveal">
+                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-hydrelon-cyan shrink-0">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Activated Carbon Block</h4>
+                                <p class="text-sm text-gray-400">Absorbs chlorine, odors and taste-altering compounds.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 scroll-reveal">
+                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-hydrelon-cyan shrink-0">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Smart TDS Sensor</h4>
+                                <p class="text-sm text-gray-400">Real-time water quality monitoring at a glance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative scroll-reveal parallax-img">
+                    <div class="absolute inset-0 bg-gradient-to-r from-hydrelon-blue to-hydrelon-cyan rounded-full blur-[100px] opacity-20"></div>
+                    <img src="https://images.unsplash.com/photo-1610557892470-55d9e80c0ce4?auto=format&fit=crop&w=600&q=80" alt="Filter Technology" class="relative z-10 rounded-3xl shadow-2xl border border-white/10 w-full">
+
+                    <div class="absolute -bottom-6 -left-6 glass-dark px-6 py-4 rounded-2xl shadow-xl z-20">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 rounded-full bg-hydrelon-green animate-pulse"></div>
+                            <span class="text-sm font-bold">Water Quality: Excellent</span>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">TDS: 012 ppm</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Horizontal Product Showcase (pinned scroll) -->
+    <section id="products" class="relative">
+        <div class="pt-24 pb-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-reveal">
+            <span class="text-hydrelon-blue font-bold tracking-widest uppercase text-sm">Featured Collection</span>
+            <h2 class="text-3xl lg:text-5xl font-bold mt-3 text-hydrelon-dark">Scroll Through the Lineup</h2>
+            <p class="text-gray-500 mt-3">Keep scrolling — the collection glides sideways as you go.</p>
+        </div>
+
+        <div id="showcase-wrap" class="overflow-hidden">
+            <div id="showcase-track" class="flex">
+                <!-- Panel 1 -->
+                <div class="showcase-panel flex items-center justify-center px-6 py-12">
+                    <div class="max-w-5xl w-full grid md:grid-cols-2 gap-10 items-center bg-gradient-to-br from-blue-50 to-white rounded-[2.5rem] p-10 shadow-xl border border-blue-100">
+                        <img src="https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=600&q=80" alt="Hydrelon Pure" class="rounded-3xl w-full h-72 object-cover showcase-img">
+                        <div>
+                            <span class="inline-block bg-hydrelon-blue text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Best Seller</span>
+                            <h3 class="text-3xl lg:text-4xl font-extrabold text-hydrelon-dark mb-3">Hydrelon Pure</h3>
+                            <p class="text-gray-500 mb-6">Under-sink reverse osmosis system with UV sterilization. Multi-stage filtration and high flow performance for the whole family.</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-3xl font-bold text-hydrelon-blue">$499</span>
+                                <button onclick="addToCart('Hydrelon Pure', 499, 'https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=100&q=80')" class="px-6 py-3 bg-hydrelon-dark text-white rounded-full font-bold hover:bg-hydrelon-blue transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel 2 -->
+                <div class="showcase-panel flex items-center justify-center px-6 py-12">
+                    <div class="max-w-5xl w-full grid md:grid-cols-2 gap-10 items-center bg-gradient-to-br from-cyan-50 to-white rounded-[2.5rem] p-10 shadow-xl border border-cyan-100">
+                        <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=600&q=80" alt="Hydrelon Air Pro" class="rounded-3xl w-full h-72 object-cover showcase-img">
+                        <div>
+                            <span class="inline-block bg-hydrelon-cyan text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Clean Air Technology</span>
+                            <h3 class="text-3xl lg:text-4xl font-extrabold text-hydrelon-dark mb-3">Hydrelon Air Pro</h3>
+                            <p class="text-gray-500 mb-6">Smart air purifier with true HEPA + activated carbon filter. Whisper-quiet operation and touch control interface.</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-3xl font-bold text-hydrelon-cyan">$329</span>
+                                <button onclick="addToCart('Hydrelon Air Pro', 329, 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=100&q=80')" class="px-6 py-3 bg-hydrelon-dark text-white rounded-full font-bold hover:bg-hydrelon-cyan transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel 3 -->
+                <div class="showcase-panel flex items-center justify-center px-6 py-12">
+                    <div class="max-w-5xl w-full grid md:grid-cols-2 gap-10 items-center bg-gradient-to-br from-purple-50 to-white rounded-[2.5rem] p-10 shadow-xl border border-purple-100">
+                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80" alt="Hydrelon Vita Shower" class="rounded-3xl w-full h-72 object-cover showcase-img">
+                        <div>
+                            <span class="inline-block bg-hydrelon-purple text-white text-xs font-bold px-3 py-1 rounded-full mb-4">New</span>
+                            <h3 class="text-3xl lg:text-4xl font-extrabold text-hydrelon-dark mb-3">Hydrelon Vita Shower</h3>
+                            <p class="text-gray-500 mb-6">Vitamin C, E &amp; B5 infused shower head. Gentle on skin and hair, fits standard shower arms in minutes.</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-3xl font-bold text-hydrelon-purple">$79</span>
+                                <button onclick="addToCart('Hydrelon Vita Shower', 79, 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=100&q=80')" class="px-6 py-3 bg-hydrelon-dark text-white rounded-full font-bold hover:bg-hydrelon-purple transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel 4 -->
+                <div class="showcase-panel flex items-center justify-center px-6 py-12">
+                    <div class="max-w-5xl w-full grid md:grid-cols-2 gap-10 items-center bg-gradient-to-br from-green-50 to-white rounded-[2.5rem] p-10 shadow-xl border border-green-100">
+                        <img src="https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=600&q=80" alt="Hydrelon Fridge Filter" class="rounded-3xl w-full h-72 object-cover showcase-img">
+                        <div>
+                            <span class="inline-block bg-hydrelon-green text-white text-xs font-bold px-3 py-1 rounded-full mb-4">6-Month Life</span>
+                            <h3 class="text-3xl lg:text-4xl font-extrabold text-hydrelon-dark mb-3">Hydrelon Fridge Filter</h3>
+                            <p class="text-gray-500 mb-6">Refrigerator water filter for pure, great-tasting water and ice. Reduces chlorine, taste &amp; odor, lead and more.</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-3xl font-bold text-hydrelon-green">$39</span>
+                                <button onclick="addToCart('Hydrelon Fridge Filter', 39, 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?auto=format&fit=crop&w=100&q=80')" class="px-6 py-3 bg-hydrelon-dark text-white rounded-full font-bold hover:bg-hydrelon-green transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- More Products Grid -->
+    <section class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 scroll-reveal">
+                <div>
+                    <span class="text-hydrelon-blue font-bold tracking-widest uppercase text-sm">Everyday Essentials</span>
+                    <h2 class="text-3xl lg:text-5xl font-bold mt-3 text-hydrelon-dark">Complete Your Care Routine</h2>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="product-card bg-white rounded-3xl p-6 shadow-lg border border-gray-100 group scroll-reveal">
+                    <div class="relative h-56 mb-6 rounded-2xl bg-gradient-to-br from-blue-50 to-white flex items-center justify-center overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=400&q=80" alt="Hydrelon Lens Solution" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <h3 class="text-xl font-bold text-hydrelon-dark">Hydrelon Lens Solution</h3>
+                    <p class="text-gray-500 text-sm mb-4">For all lens types — cleans, rinses, moisturizes</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-hydrelon-dark">$12</span>
+                        <button onclick="addToCart('Hydrelon Lens Solution', 12, 'https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=100&q=80')" class="w-10 h-10 rounded-full bg-hydrelon-light text-hydrelon-blue flex items-center justify-center hover:bg-hydrelon-blue hover:text-white transition-all" aria-label="Add Lens Solution to cart">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-card bg-white rounded-3xl p-6 shadow-lg border border-gray-100 group scroll-reveal">
+                    <div class="relative h-56 mb-6 rounded-2xl bg-gradient-to-br from-cyan-50 to-white flex items-center justify-center overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&w=400&q=80" alt="Hydrelon Microfiber Cloth" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <h3 class="text-xl font-bold text-hydrelon-dark">Hydrelon Microfiber Cloth</h3>
+                    <p class="text-gray-500 text-sm mb-4">Soft microfiber care for spotless vision (3-pack)</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-hydrelon-dark">$9</span>
+                        <button onclick="addToCart('Hydrelon Microfiber Cloth', 9, 'https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&w=100&q=80')" class="w-10 h-10 rounded-full bg-hydrelon-light text-hydrelon-blue flex items-center justify-center hover:bg-hydrelon-blue hover:text-white transition-all" aria-label="Add Microfiber Cloth to cart">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-card bg-white rounded-3xl p-6 shadow-lg border border-gray-100 group scroll-reveal">
+                    <div class="relative h-56 mb-6 rounded-2xl bg-gradient-to-br from-green-50 to-white flex items-center justify-center overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1624958723474-2e36eddca147?auto=format&fit=crop&w=400&q=80" alt="Hydrelon Compact" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <span class="absolute top-4 left-4 bg-hydrelon-blue text-white text-xs font-bold px-3 py-1 rounded-full">Compact</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-hydrelon-dark">Hydrelon Compact</h3>
+                    <p class="text-gray-500 text-sm mb-4">Countertop filtration device for small spaces</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold text-hydrelon-dark">$179</span>
+                        <button onclick="addToCart('Hydrelon Compact', 179, 'https://images.unsplash.com/photo-1624958723474-2e36eddca147?auto=format&fit=crop&w=100&q=80')" class="w-10 h-10 rounded-full bg-hydrelon-light text-hydrelon-blue flex items-center justify-center hover:bg-hydrelon-blue hover:text-white transition-all" aria-label="Add Hydrelon Compact to cart">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Tabs Section -->
+    <section id="benefits" class="py-24 bg-hydrelon-light/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 scroll-reveal">
+                <span class="text-hydrelon-blue font-bold tracking-widest uppercase text-sm">Why Hydrelon?</span>
+                <h2 class="text-3xl lg:text-5xl font-bold mt-3 text-hydrelon-dark">Four Core Benefits</h2>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8 items-start">
+                <div class="lg:col-span-4 flex flex-col gap-4 scroll-reveal">
+                    <button class="tab-btn active text-left px-6 py-5 rounded-2xl bg-white shadow-md transition-all flex items-center gap-4" data-tab="filtration">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 text-hydrelon-blue flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-filter"></i></div>
+                        <div>
+                            <h4 class="font-bold">Superior Filtration</h4>
+                            <p class="text-xs text-gray-500">Exceptional performance you can trust</p>
+                        </div>
+                    </button>
+                    <button class="tab-btn text-left px-6 py-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all flex items-center gap-4" data-tab="technology">
+                        <div class="w-12 h-12 rounded-full bg-cyan-100 text-hydrelon-cyan flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-microchip"></i></div>
+                        <div>
+                            <h4 class="font-bold">Advanced Technology</h4>
+                            <p class="text-xs text-gray-500">Smart solutions for a better everyday</p>
+                        </div>
+                    </button>
+                    <button class="tab-btn text-left px-6 py-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all flex items-center gap-4" data-tab="living">
+                        <div class="w-12 h-12 rounded-full bg-green-100 text-hydrelon-green flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <div>
+                            <h4 class="font-bold">Healthy Living</h4>
+                            <p class="text-xs text-gray-500">Products that care for your wellness</p>
+                        </div>
+                    </button>
+                    <button class="tab-btn text-left px-6 py-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all flex items-center gap-4" data-tab="future">
+                        <div class="w-12 h-12 rounded-full bg-purple-100 text-hydrelon-purple flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-leaf"></i></div>
+                        <div>
+                            <h4 class="font-bold">Sustainable Future</h4>
+                            <p class="text-xs text-gray-500">Responsible choices for a cleaner tomorrow</p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="lg:col-span-8 scroll-reveal">
+                    <div id="tab-content" class="bg-white rounded-3xl p-8 lg:p-12 shadow-xl min-h-[400px] flex flex-col justify-center relative overflow-hidden">
+                        <!-- Content injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 bg-hydrelon-dark text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-hydrelon-blue/20 to-hydrelon-cyan/20"></div>
+        <div class="bubble-field absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                <div class="scroll-reveal">
+                    <p class="text-4xl lg:text-5xl font-bold text-hydrelon-cyan mb-2"><span class="counter" data-target="99">0</span>%</p>
+                    <p class="text-sm uppercase tracking-wider text-gray-300">Purification Rate</p>
+                </div>
+                <div class="scroll-reveal">
+                    <p class="text-4xl lg:text-5xl font-bold text-hydrelon-cyan mb-2"><span class="counter" data-target="50">0</span>+</p>
+                    <p class="text-sm uppercase tracking-wider text-gray-300">Countries</p>
+                </div>
+                <div class="scroll-reveal">
+                    <p class="text-4xl lg:text-5xl font-bold text-hydrelon-cyan mb-2"><span class="counter" data-target="10">0</span>+</p>
+                    <p class="text-sm uppercase tracking-wider text-gray-300">Years of Experience</p>
+                </div>
+                <div class="scroll-reveal">
+                    <p class="text-4xl lg:text-5xl font-bold text-hydrelon-cyan mb-2"><span class="counter" data-target="24">0</span>/7</p>
+                    <p class="text-sm uppercase tracking-wider text-gray-300">Customer Support</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <div class="scroll-reveal">
+                    <span class="text-hydrelon-blue font-bold tracking-widest uppercase text-sm">Contact</span>
+                    <h2 class="text-3xl lg:text-5xl font-bold mt-3 mb-6 text-hydrelon-dark">How Can We Help You?</h2>
+                    <p class="text-gray-500 mb-8">Fill out the form to learn more about our products or get support from our expert team.</p>
+
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-blue-50 text-hydrelon-blue flex items-center justify-center"><i class="fa-solid fa-phone"></i></div>
+                            <div>
+                                <p class="text-sm text-gray-400">Phone</p>
+                                <p class="font-bold text-hydrelon-dark">+1 (800) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-blue-50 text-hydrelon-blue flex items-center justify-center"><i class="fa-solid fa-envelope"></i></div>
+                            <div>
+                                <p class="text-sm text-gray-400">Email</p>
+                                <p class="font-bold text-hydrelon-dark">info@hydrelon.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-blue-50 text-hydrelon-blue flex items-center justify-center"><i class="fa-solid fa-location-dot"></i></div>
+                            <div>
+                                <p class="text-sm text-gray-400">Address</p>
+                                <p class="font-bold text-hydrelon-dark">Innovation Park, Los Angeles, CA</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="contact-form" class="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 scroll-reveal">
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-bold text-hydrelon-dark mb-2">First Name</label>
+                            <input type="text" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-hydrelon-blue focus:ring-2 focus:ring-hydrelon-blue/20 outline-none transition-all" placeholder="Your first name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-hydrelon-dark mb-2">Last Name</label>
+                            <input type="text" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-hydrelon-blue focus:ring-2 focus:ring-hydrelon-blue/20 outline-none transition-all" placeholder="Your last name">
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-hydrelon-dark mb-2">Email</label>
+                        <input type="email" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-hydrelon-blue focus:ring-2 focus:ring-hydrelon-blue/20 outline-none transition-all" placeholder="you@example.com">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-hydrelon-dark mb-2">Message</label>
+                        <textarea rows="4" required class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-hydrelon-blue focus:ring-2 focus:ring-hydrelon-blue/20 outline-none transition-all" placeholder="How can we help you?"></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-4 bg-hydrelon-dark text-white rounded-xl font-bold hover:bg-hydrelon-blue transition-all flex items-center justify-center gap-2 group">
+                        Send Message <i class="fa-solid fa-paper-plane group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-hydrelon-dark text-white pt-20 pb-10 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <div>
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <svg width="50" height="50" viewBox="0 0 100 100">
+                            <path d="M25,15 L25,85 L48,85 L48,55 C48,55 72,55 72,30 C72,10 48,10 48,10 L25,10" fill="none" stroke="url(#footerLogoGrad)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="68" cy="75" r="7" fill="#00B5D8"/>
+                            <defs>
+                                <linearGradient id="footerLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#1167B1;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#00B5D8;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span class="text-2xl font-bold tracking-wider">HYDRELON</span>
+                    </a>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Pure Water. Clean Air. Better Life. Premium living solutions inspired by nature and powered by technology.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Products</h4>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li><a href="#products" class="hover:text-hydrelon-cyan transition-colors">Water Filters</a></li>
+                        <li><a href="#products" class="hover:text-hydrelon-cyan transition-colors">Air Filters</a></li>
+                        <li><a href="#products" class="hover:text-hydrelon-cyan transition-colors">Vitamin Shower Heads</a></li>
+                        <li><a href="#products" class="hover:text-hydrelon-cyan transition-colors">Lens Care</a></li>
+                        <li><a href="#products" class="hover:text-hydrelon-cyan transition-colors">Refrigerator Filters</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Company</h4>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li><a href="#about" class="hover:text-hydrelon-cyan transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-hydrelon-cyan transition-colors">Sustainability</a></li>
+                        <li><a href="#" class="hover:text-hydrelon-cyan transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-hydrelon-cyan transition-colors">Press</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Follow Us</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-hydrelon-blue transition-colors" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-hydrelon-blue transition-colors" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-hydrelon-blue transition-colors" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-hydrelon-blue transition-colors" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-sm text-gray-400 mb-2">Subscribe to our newsletter</p>
+                        <div class="flex">
+                            <input type="email" placeholder="Email address" class="bg-white/10 border border-white/10 rounded-l-lg px-4 py-2 text-sm outline-none focus:border-hydrelon-cyan w-full">
+                            <button class="bg-hydrelon-blue px-4 rounded-r-lg hover:bg-hydrelon-cyan transition-colors" aria-label="Subscribe"><i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
+                <p>&copy; 2026 Hydrelon. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white">Privacy Policy</a>
+                    <a href="#" class="hover:text-white">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-hydrelon-dark text-white px-6 py-4 rounded-xl shadow-2xl transform translate-y-24 opacity-0 transition-all duration-300 z-[80] flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-hydrelon-green flex items-center justify-center"><i class="fa-solid fa-check text-sm"></i></div>
+        <div>
+            <h4 class="font-bold text-sm">Added to Cart</h4>
+            <p id="toast-message" class="text-xs text-gray-300">Item added to your cart.</p>
+        </div>
+    </div>
+
+    <script>
+        // --- Loader ---
+        // The overlay covers the whole page, so it must come down even if a CDN
+        // script never arrives; the safety timer guarantees that.
+        let siteRevealed = false;
+        function revealSite() {
+            if (siteRevealed) return;
+            siteRevealed = true;
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+                if (typeof gsap !== 'undefined') initAnimations();
+            }, 800);
+        }
+        window.addEventListener('load', revealSite);
+        setTimeout(revealSite, 5000);
+
+        // --- Three.js Water Background ---
+        function initWaterBackground() {
+            const canvas = document.getElementById('water-canvas');
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const geometry = new THREE.PlaneGeometry(100, 60, 64, 64);
+
+            const material = new THREE.ShaderMaterial({
+                uniforms: {
+                    uTime: { value: 0 },
+                    uColor1: { value: new THREE.Color('#1167B1') },
+                    uColor2: { value: new THREE.Color('#00B5D8') }
+                },
+                vertexShader: `
+                    uniform float uTime;
+                    varying vec2 vUv;
+                    varying float vElevation;
+                    void main() {
+                        vUv = uv;
+                        vec3 pos = position;
+                        float elevation = sin(pos.x * 0.2 + uTime * 0.8) * 1.5
+                                        + sin(pos.y * 0.3 + uTime * 0.6) * 1.0
+                                        + sin((pos.x + pos.y) * 0.1 + uTime) * 0.5;
+                        pos.z += elevation;
+                        vElevation = elevation;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform vec3 uColor1;
+                    uniform vec3 uColor2;
+                    varying float vElevation;
+                    varying vec2 vUv;
+                    void main() {
+                        float mixStrength = (vElevation + 3.0) / 6.0;
+                        vec3 color = mix(uColor1, uColor2, mixStrength);
+                        float alpha = 0.15 + vUv.y * 0.1;
+                        gl_FragColor = vec4(color, alpha);
+                    }
+                `,
+                transparent: true,
+                side: THREE.DoubleSide
+            });
+
+            const plane = new THREE.Mesh(geometry, material);
+            plane.rotation.x = -Math.PI * 0.35;
+            plane.position.y = -5;
+            scene.add(plane);
+
+            let time = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                time += 0.01;
+                material.uniforms.uTime.value = time;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+        if (typeof THREE !== 'undefined') initWaterBackground();
+
+        // --- Rising bubbles in dark sections ---
+        document.querySelectorAll('.bubble-field').forEach(field => {
+            for (let i = 0; i < 14; i++) {
+                const b = document.createElement('span');
+                const size = 6 + Math.random() * 18;
+                b.style.width = size + 'px';
+                b.style.height = size + 'px';
+                b.style.left = Math.random() * 100 + '%';
+                b.style.animationDuration = (8 + Math.random() * 10) + 's';
+                b.style.animationDelay = (Math.random() * 10) + 's';
+                field.appendChild(b);
+            }
+        });
+
+        // --- GSAP Animations ---
+        function initAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+
+            gsap.from('.hero-content > *', {
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.hero-visual', {
+                x: 50,
+                opacity: 0,
+                duration: 1.2,
+                delay: 0.4,
+                ease: 'power3.out'
+            });
+
+            // Scroll reveals
+            gsap.utils.toArray('.scroll-reveal').forEach(element => {
+                gsap.from(element, {
+                    scrollTrigger: {
+                        trigger: element,
+                        start: 'top 85%',
+                        toggleActions: 'play none none reverse'
+                    },
+                    y: 50,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: 'power3.out'
+                });
+            });
+
+            // Parallax on technology image
+            gsap.utils.toArray('.parallax-img').forEach(el => {
+                gsap.to(el, {
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top bottom',
+                        end: 'bottom top',
+                        scrub: true
+                    },
+                    y: -40,
+                    ease: 'none'
+                });
+            });
+
+            // Pinned horizontal product showcase
+            const track = document.getElementById('showcase-track');
+            const panels = gsap.utils.toArray('.showcase-panel');
+            const horizontal = gsap.to(track, {
+                x: () => -(track.scrollWidth - window.innerWidth),
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#showcase-wrap',
+                    pin: true,
+                    scrub: 1,
+                    start: 'top top+=90',
+                    end: () => '+=' + (track.scrollWidth - window.innerWidth),
+                    invalidateOnRefresh: true
+                }
+            });
+
+            // Slight zoom on each showcase image as it travels
+            gsap.utils.toArray('.showcase-img').forEach(img => {
+                gsap.fromTo(img, { scale: 0.92 }, {
+                    scale: 1,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: img,
+                        containerAnimation: horizontal,
+                        start: 'left right',
+                        end: 'center center',
+                        scrub: true
+                    }
+                });
+            });
+
+            // Counter animation
+            gsap.utils.toArray('.counter').forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const obj = { val: 0 };
+                gsap.to(obj, {
+                    scrollTrigger: {
+                        trigger: counter,
+                        start: 'top 85%'
+                    },
+                    val: target,
+                    duration: 2,
+                    ease: 'power2.out',
+                    onUpdate: () => { counter.textContent = Math.ceil(obj.val); }
+                });
+            });
+        }
+
+        // --- Scroll progress + Navbar Scroll Effect ---
+        const navbar = document.getElementById('navbar');
+        const progress = document.getElementById('scroll-progress');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('py-2');
+                navbar.classList.remove('py-4');
+            } else {
+                navbar.classList.add('py-4');
+                navbar.classList.remove('py-2');
+            }
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            progress.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+        });
+
+        // --- Mobile Menu ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenu = document.getElementById('close-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('translate-x-full');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+        closeMenu.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+        // --- Tabs ---
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContent = document.getElementById('tab-content');
+
+        const tabData = {
+            filtration: {
+                title: 'Superior Filtration',
+                text: 'HYDRELON filters effectively capture a wide spectrum of contaminants — from the smallest microplastics to heavy metals. Every drop passes through a multi-layer filtration process before it reaches your tap.',
+                icon: 'fa-filter',
+                color: 'text-hydrelon-blue',
+                bg: 'bg-blue-50'
+            },
+            technology: {
+                title: 'Advanced Technology',
+                text: 'Track your device status from your phone with smart sensors and IoT integration. Filter replacement reminders arrive automatically, and water quality is monitored in real time.',
+                icon: 'fa-microchip',
+                color: 'text-hydrelon-cyan',
+                bg: 'bg-cyan-50'
+            },
+            living: {
+                title: 'Healthy Living',
+                text: 'Water purified of chlorine and harmful substances protects the natural balance of your skin and hair. With our vitamin shower heads, every bath becomes a spa experience.',
+                icon: 'fa-heart-pulse',
+                color: 'text-hydrelon-green',
+                bg: 'bg-green-50'
+            },
+            future: {
+                title: 'Sustainable Future',
+                text: 'Reduce dependence on single-use plastic bottles and protect both your budget and the planet. Long-life filters and energy-efficient motors support a sustainable lifestyle.',
+                icon: 'fa-leaf',
+                color: 'text-hydrelon-purple',
+                bg: 'bg-purple-50'
+            }
+        };
+
+        function setTab(tabKey) {
+            const data = tabData[tabKey];
+            tabContent.innerHTML = `
+                <div class="absolute top-0 right-0 w-64 h-64 ${data.bg} rounded-bl-full opacity-30"></div>
+                <div class="relative z-10">
+                    <div class="w-20 h-20 rounded-2xl ${data.bg} ${data.color} flex items-center justify-center text-4xl mb-6">
+                        <i class="fa-solid ${data.icon}"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold text-hydrelon-dark mb-4">${data.title}</h3>
+                    <p class="text-gray-600 text-lg leading-relaxed mb-8">${data.text}</p>
+                    <button class="px-6 py-3 border-2 border-hydrelon-dark text-hydrelon-dark rounded-full font-bold hover:bg-hydrelon-dark hover:text-white transition-all">
+                        Learn More
+                    </button>
+                </div>
+            `;
+
+            tabBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tabKey) btn.classList.add('active');
+            });
+
+            if (typeof gsap !== 'undefined') {
+                gsap.fromTo(tabContent, {opacity: 0, x: 20}, {opacity: 1, x: 0, duration: 0.4});
+            }
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => setTab(btn.dataset.tab));
+        });
+        setTab('filtration');
+
+        // --- Cart Functionality ---
+        let cart = [];
+        const cartBtn = document.getElementById('cart-btn');
+        const closeCart = document.getElementById('close-cart');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartCount = document.getElementById('cart-count');
+        const cartTotal = document.getElementById('cart-total');
+
+        function toggleCart() {
+            const isOpen = cartDrawer.classList.contains('open');
+            if (isOpen) {
+                cartDrawer.classList.remove('open');
+                cartOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+                cartOverlay.classList.add('opacity-0', 'pointer-events-none');
+            } else {
+                cartDrawer.classList.add('open');
+                cartOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                cartOverlay.classList.add('opacity-100', 'pointer-events-auto');
+            }
+        }
+
+        cartBtn.addEventListener('click', toggleCart);
+        closeCart.addEventListener('click', toggleCart);
+        cartOverlay.addEventListener('click', toggleCart);
+
+        function formatPrice(n) {
+            return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function updateCart() {
+            cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+            cartCount.style.opacity = cart.length > 0 ? '1' : '0';
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="text-center text-gray-400 mt-10">
+                        <i class="fa-solid fa-basket-shopping text-4xl mb-3"></i>
+                        <p>Your cart is empty</p>
+                    </div>
+                `;
+                cartTotal.textContent = '$0.00';
+                return;
+            }
+
+            cartItemsContainer.innerHTML = cart.map((item, index) => `
+                <div class="flex gap-4 bg-gray-50 p-3 rounded-xl">
+                    <img src="${item.img}" class="w-16 h-16 object-cover rounded-lg bg-white" alt="${item.name}">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-hydrelon-dark">${item.name}</h4>
+                        <p class="text-hydrelon-blue font-bold text-sm">${formatPrice(item.price)}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <button onclick="updateQty(${index}, -1)" class="w-6 h-6 rounded bg-white border flex items-center justify-center text-xs hover:bg-gray-100">-</button>
+                            <span class="text-sm font-medium">${item.qty}</span>
+                            <button onclick="updateQty(${index}, 1)" class="w-6 h-6 rounded bg-white border flex items-center justify-center text-xs hover:bg-gray-100">+</button>
+                        </div>
+                    </div>
+                    <button onclick="removeItem(${index})" class="text-gray-400 hover:text-red-500 self-start" aria-label="Remove item"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            cartTotal.textContent = formatPrice(total);
+        }
+
+        window.addToCart = function(name, price, img) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ name, price, img, qty: 1 });
+            }
+            updateCart();
+            showToast(`${name} was added to your cart.`);
+
+            if (!cartDrawer.classList.contains('open')) {
+                toggleCart();
+                setTimeout(() => {
+                    if (cart.length === 1 && cartDrawer.classList.contains('open')) toggleCart();
+                }, 1500);
+            }
+        };
+
+        window.updateQty = function(index, change) {
+            cart[index].qty += change;
+            if (cart[index].qty <= 0) cart.splice(index, 1);
+            updateCart();
+        };
+
+        window.removeItem = function(index) {
+            cart.splice(index, 1);
+            updateCart();
+        };
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        // --- Contact Form ---
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Sent!';
+            btn.classList.remove('bg-hydrelon-dark');
+            btn.classList.add('bg-hydrelon-green');
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.add('bg-hydrelon-dark');
+                btn.classList.remove('bg-hydrelon-green');
+                this.reset();
+            }, 3000);
+        });
+
+        // --- Video Button (demo placeholder) ---
+        document.getElementById('play-video').addEventListener('click', () => {
+            showToast('Video modal opened (demo)');
+        });
+    </script>
+</body>
+</html>
