@@ -86,13 +86,12 @@
             100% { transform: translateY(-20px) scale(1.2); opacity: 0; }
         }
 
-        /* Loader draw-on stroke */
-        .draw-path {
-            stroke-dasharray: 300;
-            stroke-dashoffset: 300;
-            animation: drawLogo 1.6s ease forwards;
+        /* Loader mark entrance */
+        .logo-rise { animation: logoRise 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        @keyframes logoRise {
+            from { transform: translateY(14px) scale(0.94); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
         }
-        @keyframes drawLogo { to { stroke-dashoffset: 0; } }
 
         /* Glassmorphism */
         .glass {
@@ -204,6 +203,17 @@
             transition: opacity 0.8s ease;
         }
 
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .logo-droplet, .logo-bubble, .float-anim, .marquee-track,
+            .bubble-field span, .logo-rise {
+                animation: none !important;
+            }
+            *, *::before, *::after {
+                transition-duration: 0.01ms !important;
+            }
+        }
+
         /* Scroll progress bar */
         #scroll-progress {
             position: fixed;
@@ -219,18 +229,59 @@
 
     <div id="scroll-progress"></div>
 
+    <!-- Brand mark: H with wave crossbar, falling droplet and halftone spray -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="hydrelon-mark" viewBox="0 0 132 100">
+            <defs>
+                <linearGradient id="markGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#0A2A6B"/>
+                    <stop offset="45%" stop-color="#1167B1"/>
+                    <stop offset="100%" stop-color="#00B5D8"/>
+                </linearGradient>
+                <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#1167B1"/>
+                    <stop offset="100%" stop-color="#00B5D8"/>
+                </linearGradient>
+                <linearGradient id="dropGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+                    <stop offset="0%" stop-color="#00B5D8"/>
+                    <stop offset="100%" stop-color="#1167B1"/>
+                </linearGradient>
+            </defs>
+
+            <!-- stems with slab flares -->
+            <g fill="url(#markGrad)">
+                <rect x="19" y="9" width="16" height="82" rx="2"/>
+                <rect x="12" y="9" width="30" height="7" rx="3.5"/>
+                <rect x="12" y="84" width="30" height="7" rx="3.5"/>
+                <rect x="63" y="9" width="16" height="70" rx="2"/>
+                <rect x="56" y="9" width="30" height="7" rx="3.5"/>
+            </g>
+
+            <!-- wave crossbar: two ribbons with an open channel between them -->
+            <path d="M12,57 C24,43 38,38 50,42 C58,45 66,49 75,47 C66,55 57,53 49,50 C38,46 24,47 12,57 Z" fill="url(#waveGrad)"/>
+            <path d="M6,74 C20,58 36,51 50,56 C60,59 69,63 79,59 C69,69 57,68 47,64 C35,60 20,62 6,74 Z" fill="url(#waveGrad)"/>
+
+            <!-- falling droplet -->
+            <path d="M71,74 C71,74 82,88 82,94 A11,11 0 0 1 60,94 C60,88 71,74 71,74 Z" fill="url(#dropGrad)" class="logo-droplet"/>
+
+            <!-- halftone spray -->
+            <g fill="#1167B1">
+                <circle cx="94" cy="44" r="2.6"/><circle cx="94" cy="53" r="2.9"/><circle cx="94" cy="62" r="2.6"/><circle cx="94" cy="71" r="2.2"/>
+                <circle cx="104" cy="39" r="2.4"/><circle cx="104" cy="48" r="2.9"/><circle cx="104" cy="57" r="2.9"/><circle cx="104" cy="66" r="2.4"/><circle cx="104" cy="75" r="1.9"/>
+                <circle cx="114" cy="35" r="2"/><circle cx="114" cy="44" r="2.4"/><circle cx="114" cy="53" r="2.4"/><circle cx="114" cy="62" r="2"/><circle cx="114" cy="71" r="1.6"/>
+            </g>
+            <g fill="#00B5D8">
+                <circle cx="124" cy="31" r="1.7"/><circle cx="124" cy="41" r="1.9"/><circle cx="124" cy="51" r="1.9"/><circle cx="124" cy="61" r="1.7"/><circle cx="124" cy="70" r="1.4"/>
+                <circle cx="99" cy="34" r="1.6"/><circle cx="109" cy="30" r="1.4"/><circle cx="99" cy="80" r="1.5"/><circle cx="109" cy="83" r="1.3"/>
+            </g>
+        </symbol>
+    </svg>
+
     <!-- Loader -->
     <div id="loader" class="loader-overlay">
         <div class="text-center">
-            <svg width="120" height="120" viewBox="0 0 100 100" class="mx-auto mb-4">
-                <path d="M30,20 L30,80 L50,80 L50,55 C50,55 70,55 70,35 C70,15 50,15 50,15 L30,15" fill="none" stroke="url(#logoGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="draw-path"/>
-                <circle cx="65" cy="70" r="6" fill="#00B5D8" class="logo-droplet"/>
-                <defs>
-                    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#1167B1;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#00B5D8;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
+            <svg width="150" height="114" viewBox="0 0 132 100" class="mx-auto mb-4 logo-rise">
+                <use href="#hydrelon-mark"></use>
             </svg>
             <h2 class="text-white text-xl font-bold tracking-widest">HYDRELON</h2>
             <p class="text-hydrelon-cyan text-[0.65rem] tracking-[0.3em] uppercase mt-2">Pure Water. Clean Air. Better Life.</p>
@@ -245,18 +296,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="glass rounded-2xl px-6 py-3 flex justify-between items-center shadow-lg">
                 <a href="#" class="flex items-center gap-3 group">
-                    <svg width="46" height="46" viewBox="0 0 100 100" class="transition-transform group-hover:scale-110">
-                        <path d="M25,15 L25,85 L48,85 L48,55 C48,55 72,55 72,30 C72,10 48,10 48,10 L25,10" fill="none" stroke="url(#navLogoGrad)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="68" cy="75" r="7" fill="#00B5D8" class="logo-droplet"/>
-                        <circle cx="80" cy="60" r="3" fill="#8A6CFF" class="logo-bubble"/>
-                        <circle cx="85" cy="75" r="2" fill="#00B5D8" class="logo-bubble"/>
-                        <circle cx="88" cy="52" r="2" fill="#1167B1" class="logo-bubble"/>
-                        <defs>
-                            <linearGradient id="navLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#1167B1;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#00B5D8;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
+                    <svg width="58" height="44" viewBox="0 0 132 100" class="transition-transform group-hover:scale-110 shrink-0">
+                        <use href="#hydrelon-mark"></use>
                     </svg>
                     <div>
                         <span class="text-2xl font-bold tracking-wider text-hydrelon-dark block leading-none">HYDRELON</span>
@@ -373,16 +414,16 @@
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] lg:w-[550px] lg:h-[550px] rounded-full border border-hydrelon-cyan/20 animate-[spin_20s_linear_infinite]"></div>
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] lg:w-[480px] lg:h-[480px] rounded-full border border-hydrelon-blue/10 animate-[spin_15s_linear_infinite_reverse]"></div>
 
-                    <img src="https://images.unsplash.com/photo-1624958723474-2e36eddca147?auto=format&fit=crop&w=600&q=80"
-                         alt="Hydrelon Water Filter"
+                    <img src="https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=600&q=80"
+                         alt="Filtered water poured into a clean glass"
                          class="relative z-10 w-[300px] lg:w-[420px] drop-shadow-2xl rounded-3xl"
                          style="mask-image: linear-gradient(to bottom, black 80%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);">
 
-                    <div class="absolute top-10 -left-10 glass px-4 py-3 rounded-xl shadow-lg animate-[float_4s_ease-in-out_infinite]">
+                    <div class="absolute top-10 -left-10 z-20 glass px-4 py-3 rounded-xl shadow-lg animate-[float_4s_ease-in-out_infinite]">
                         <p class="text-xs text-gray-500 uppercase font-bold">Purification Rate</p>
                         <p class="text-2xl font-bold text-hydrelon-blue">99.9%</p>
                     </div>
-                    <div class="absolute bottom-20 -right-5 glass px-4 py-3 rounded-xl shadow-lg animate-[float_5s_ease-in-out_infinite_1s]">
+                    <div class="absolute bottom-20 -right-5 z-20 glass px-4 py-3 rounded-xl shadow-lg animate-[float_5s_ease-in-out_infinite_1s]">
                         <p class="text-xs text-gray-500 uppercase font-bold">Membrane</p>
                         <p class="text-2xl font-bold text-hydrelon-cyan">RO+UV</p>
                     </div>
@@ -430,7 +471,7 @@
                     </div>
                     <h3 class="text-xl font-bold mb-2 text-hydrelon-dark">Water Filters</h3>
                     <p class="text-gray-500 mb-6">Healthy water, healthier living. Crystal-clean water from every tap in your home.</p>
-                    <img src="https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=400&q=80" alt="Water Filter" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-blue-50/50 to-transparent">
+                    <img src="https://images.unsplash.com/photo-1614598642118-7841d2d5bc18?auto=format&fit=crop&w=400&q=80" alt="Water Filter" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-blue-50/50 to-transparent">
                 </div>
 
                 <!-- 2 Air Filters -->
@@ -441,7 +482,7 @@
                     </div>
                     <h3 class="text-xl font-bold mb-2 text-hydrelon-dark">Air Filters</h3>
                     <p class="text-gray-500 mb-6">Clean air, fresher breathing. Renew your indoor air with true HEPA filtration.</p>
-                    <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=400&q=80" alt="Air Purifier" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-cyan-50/50 to-transparent">
+                    <img src="https://images.unsplash.com/photo-1632928274371-878938e4d825?auto=format&fit=crop&w=400&q=80" alt="Air Purifier" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-cyan-50/50 to-transparent">
                 </div>
 
                 <!-- 3 Vitamin Shower Heads -->
@@ -452,7 +493,7 @@
                     </div>
                     <h3 class="text-xl font-bold mb-2 text-hydrelon-dark">Vitamin Shower Heads</h3>
                     <p class="text-gray-500 mb-6">A refreshing shower infused with vitamins C, E &amp; B5 — caring for skin and hair.</p>
-                    <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80" alt="Vitamin Shower Head" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-purple-50/50 to-transparent">
+                    <img src="https://images.unsplash.com/photo-1576678433413-202829a1ab98?auto=format&fit=crop&w=400&q=80" alt="Vitamin Shower Head" class="w-full h-44 object-cover rounded-xl bg-gradient-to-b from-purple-50/50 to-transparent">
                 </div>
 
                 <!-- 4 Eyeglass Lens Solution -->
@@ -535,7 +576,7 @@
                 </div>
                 <div class="relative scroll-reveal parallax-img">
                     <div class="absolute inset-0 bg-gradient-to-r from-hydrelon-blue to-hydrelon-cyan rounded-full blur-[100px] opacity-20"></div>
-                    <img src="https://images.unsplash.com/photo-1610557892470-55d9e80c0ce4?auto=format&fit=crop&w=600&q=80" alt="Filter Technology" class="relative z-10 rounded-3xl shadow-2xl border border-white/10 w-full">
+                    <img src="https://images.unsplash.com/photo-1667404202905-4335b5370d96?auto=format&fit=crop&w=600&q=80" alt="Filter Technology" class="relative z-10 rounded-3xl shadow-2xl border border-white/10 w-full">
 
                     <div class="absolute -bottom-6 -left-6 glass-dark px-6 py-4 rounded-2xl shadow-xl z-20">
                         <div class="flex items-center gap-3">
@@ -562,14 +603,14 @@
                 <!-- Panel 1 -->
                 <div class="showcase-panel flex items-center justify-center px-6 py-12">
                     <div class="max-w-5xl w-full grid md:grid-cols-2 gap-10 items-center bg-gradient-to-br from-blue-50 to-white rounded-[2.5rem] p-10 shadow-xl border border-blue-100">
-                        <img src="https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=600&q=80" alt="Hydrelon Pure" class="rounded-3xl w-full h-72 object-cover showcase-img">
+                        <img src="https://images.unsplash.com/photo-1614598642118-7841d2d5bc18?auto=format&fit=crop&w=600&q=80" alt="Hydrelon Pure" class="rounded-3xl w-full h-72 object-cover showcase-img">
                         <div>
                             <span class="inline-block bg-hydrelon-blue text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Best Seller</span>
                             <h3 class="text-3xl lg:text-4xl font-extrabold text-hydrelon-dark mb-3">Hydrelon Pure</h3>
                             <p class="text-gray-500 mb-6">Under-sink reverse osmosis system with UV sterilization. Multi-stage filtration and high flow performance for the whole family.</p>
                             <div class="flex items-center justify-between">
                                 <span class="text-3xl font-bold text-hydrelon-blue">$499</span>
-                                <button onclick="addToCart('Hydrelon Pure', 499, 'https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=100&q=80')" class="px-6 py-3 bg-hydrelon-dark text-white rounded-full font-bold hover:bg-hydrelon-blue transition-all flex items-center gap-2">
+                                <button onclick="addToCart('Hydrelon Pure', 499, 'https://images.unsplash.com/photo-1614598642118-7841d2d5bc18?auto=format&fit=crop&w=100&q=80')" class="px-6 py-3 bg-hydrelon-dark text-white rounded-full font-bold hover:bg-hydrelon-blue transition-all flex items-center gap-2">
                                     <i class="fa-solid fa-cart-plus"></i> Add to Cart
                                 </button>
                             </div>
@@ -580,14 +621,14 @@
                 <!-- Panel 2 -->
                 <div class="showcase-panel flex items-center justify-center px-6 py-12">
                     <div class="max-w-5xl w-full grid md:grid-cols-2 gap-10 items-center bg-gradient-to-br from-cyan-50 to-white rounded-[2.5rem] p-10 shadow-xl border border-cyan-100">
-                        <img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=600&q=80" alt="Hydrelon Air Pro" class="rounded-3xl w-full h-72 object-cover showcase-img">
+                        <img src="https://images.unsplash.com/photo-1632928274371-878938e4d825?auto=format&fit=crop&w=600&q=80" alt="Hydrelon Air Pro" class="rounded-3xl w-full h-72 object-cover showcase-img">
                         <div>
                             <span class="inline-block bg-hydrelon-cyan text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Clean Air Technology</span>
                             <h3 class="text-3xl lg:text-4xl font-extrabold text-hydrelon-dark mb-3">Hydrelon Air Pro</h3>
                             <p class="text-gray-500 mb-6">Smart air purifier with true HEPA + activated carbon filter. Whisper-quiet operation and touch control interface.</p>
                             <div class="flex items-center justify-between">
                                 <span class="text-3xl font-bold text-hydrelon-cyan">$329</span>
-                                <button onclick="addToCart('Hydrelon Air Pro', 329, 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?auto=format&fit=crop&w=100&q=80')" class="px-6 py-3 bg-hydrelon-dark text-white rounded-full font-bold hover:bg-hydrelon-cyan transition-all flex items-center gap-2">
+                                <button onclick="addToCart('Hydrelon Air Pro', 329, 'https://images.unsplash.com/photo-1632928274371-878938e4d825?auto=format&fit=crop&w=100&q=80')" class="px-6 py-3 bg-hydrelon-dark text-white rounded-full font-bold hover:bg-hydrelon-cyan transition-all flex items-center gap-2">
                                     <i class="fa-solid fa-cart-plus"></i> Add to Cart
                                 </button>
                             </div>
@@ -598,14 +639,14 @@
                 <!-- Panel 3 -->
                 <div class="showcase-panel flex items-center justify-center px-6 py-12">
                     <div class="max-w-5xl w-full grid md:grid-cols-2 gap-10 items-center bg-gradient-to-br from-purple-50 to-white rounded-[2.5rem] p-10 shadow-xl border border-purple-100">
-                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80" alt="Hydrelon Vita Shower" class="rounded-3xl w-full h-72 object-cover showcase-img">
+                        <img src="https://images.unsplash.com/photo-1652662700928-5a4685e87d64?auto=format&fit=crop&w=600&q=80" alt="Hydrelon Vita Shower" class="rounded-3xl w-full h-72 object-cover showcase-img">
                         <div>
                             <span class="inline-block bg-hydrelon-purple text-white text-xs font-bold px-3 py-1 rounded-full mb-4">New</span>
                             <h3 class="text-3xl lg:text-4xl font-extrabold text-hydrelon-dark mb-3">Hydrelon Vita Shower</h3>
                             <p class="text-gray-500 mb-6">Vitamin C, E &amp; B5 infused shower head. Gentle on skin and hair, fits standard shower arms in minutes.</p>
                             <div class="flex items-center justify-between">
                                 <span class="text-3xl font-bold text-hydrelon-purple">$79</span>
-                                <button onclick="addToCart('Hydrelon Vita Shower', 79, 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=100&q=80')" class="px-6 py-3 bg-hydrelon-dark text-white rounded-full font-bold hover:bg-hydrelon-purple transition-all flex items-center gap-2">
+                                <button onclick="addToCart('Hydrelon Vita Shower', 79, 'https://images.unsplash.com/photo-1652662700928-5a4685e87d64?auto=format&fit=crop&w=100&q=80')" class="px-6 py-3 bg-hydrelon-dark text-white rounded-full font-bold hover:bg-hydrelon-purple transition-all flex items-center gap-2">
                                     <i class="fa-solid fa-cart-plus"></i> Add to Cart
                                 </button>
                             </div>
@@ -675,14 +716,14 @@
 
                 <div class="product-card bg-white rounded-3xl p-6 shadow-lg border border-gray-100 group scroll-reveal">
                     <div class="relative h-56 mb-6 rounded-2xl bg-gradient-to-br from-green-50 to-white flex items-center justify-center overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1624958723474-2e36eddca147?auto=format&fit=crop&w=400&q=80" alt="Hydrelon Compact" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="https://images.unsplash.com/photo-1669211659110-3f3db4119b65?auto=format&fit=crop&w=400&q=80" alt="Hydrelon Compact" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <span class="absolute top-4 left-4 bg-hydrelon-blue text-white text-xs font-bold px-3 py-1 rounded-full">Compact</span>
                     </div>
                     <h3 class="text-xl font-bold text-hydrelon-dark">Hydrelon Compact</h3>
                     <p class="text-gray-500 text-sm mb-4">Countertop filtration device for small spaces</p>
                     <div class="flex justify-between items-center">
                         <span class="text-2xl font-bold text-hydrelon-dark">$179</span>
-                        <button onclick="addToCart('Hydrelon Compact', 179, 'https://images.unsplash.com/photo-1624958723474-2e36eddca147?auto=format&fit=crop&w=100&q=80')" class="w-10 h-10 rounded-full bg-hydrelon-light text-hydrelon-blue flex items-center justify-center hover:bg-hydrelon-blue hover:text-white transition-all" aria-label="Add Hydrelon Compact to cart">
+                        <button onclick="addToCart('Hydrelon Compact', 179, 'https://images.unsplash.com/photo-1669211659110-3f3db4119b65?auto=format&fit=crop&w=100&q=80')" class="w-10 h-10 rounded-full bg-hydrelon-light text-hydrelon-blue flex items-center justify-center hover:bg-hydrelon-blue hover:text-white transition-all" aria-label="Add Hydrelon Compact to cart">
                             <i class="fa-solid fa-plus"></i>
                         </button>
                     </div>
@@ -833,15 +874,8 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
                 <div>
                     <a href="#" class="flex items-center gap-3 mb-6">
-                        <svg width="50" height="50" viewBox="0 0 100 100">
-                            <path d="M25,15 L25,85 L48,85 L48,55 C48,55 72,55 72,30 C72,10 48,10 48,10 L25,10" fill="none" stroke="url(#footerLogoGrad)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-                            <circle cx="68" cy="75" r="7" fill="#00B5D8"/>
-                            <defs>
-                                <linearGradient id="footerLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#1167B1;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#00B5D8;stop-opacity:1" />
-                                </linearGradient>
-                            </defs>
+                        <svg width="66" height="50" viewBox="0 0 132 100">
+                            <use href="#hydrelon-mark"></use>
                         </svg>
                         <span class="text-2xl font-bold tracking-wider">HYDRELON</span>
                     </a>
