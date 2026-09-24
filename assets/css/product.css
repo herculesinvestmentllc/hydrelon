@@ -1,0 +1,38 @@
+/* products/*.html */
+.pdp{max-width:1080px;padding-top:36px;padding-bottom:96px}
+.crumbs{font-size:15px;color:var(--muted2)}
+.crumbs a{color:var(--muted)}.crumbs a:hover{color:var(--blue)}
+.crumbs span{margin:0 6px;opacity:.6}
+.pdp-top{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:56px;align-items:center;margin-top:26px}
+.pdp-media{background:radial-gradient(circle at 50% 45%,#ffffff 0%,#eaf3fb 70%);border-radius:28px;padding:36px;display:flex;justify-content:center;box-shadow:var(--sh1)}
+.pdp-media img{max-height:520px;width:auto;filter:drop-shadow(0 24px 30px rgba(17,84,199,.18))}
+.pdp-info h1{font-size:clamp(40px,5.4vw,62px);margin:12px 0 14px}
+.pdp-lead{font-size:21px;color:#3c4a64;margin-bottom:24px}
+.pdp-facts{border-top:1px solid var(--line)}
+.pdp-facts li{display:flex;justify-content:space-between;gap:18px;padding:12px 0;border-bottom:1px solid var(--line);font-size:18px}
+.pdp-facts b{font-weight:500;color:var(--ink)}
+.pdp-facts span{color:#3c4a64;text-align:right}
+.pdp-fit{margin-top:18px;font-size:15.5px;color:var(--muted2)}
+.pdp-contact{margin-top:14px;font-size:18px}
+.pdp-contact a,.pdp-block a{color:var(--blue);text-decoration:underline;text-underline-offset:3px}
+.pdp-block{margin-top:64px;max-width:780px}
+.pdp-block h2{font-size:32px;margin-bottom:14px}
+.pdp-block p{color:#3c4a64;font-size:19px;margin-top:10px}
+.spec-wrap{overflow-x:auto}
+.spec{width:100%;border-collapse:collapse;font-size:18px}
+.spec th,.spec td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.spec th{font-weight:500;color:var(--ink);width:44%}
+.spec td{color:#3c4a64}
+.spec tr:nth-child(odd){background:rgba(17,84,199,.03)}
+.pdp-block .spec-note{font-size:15.5px;color:var(--muted2)}
+.pdp-warning{border-left:3px solid #d99a22;background:#fffaf0;padding:18px 22px;border-radius:0 14px 14px 0}
+.pdp-warning h2{font-size:24px}
+.pdp-block details{border-bottom:1px solid var(--line);padding:14px 0}
+.pdp-block summary{cursor:pointer;font-size:20px;color:var(--ink);font-weight:400}
+.pdp-block details p{margin-top:8px}
+@media(max-width:900px){
+  .pdp-top{grid-template-columns:1fr;gap:28px}
+  .pdp-media img{max-height:380px}
+  .pdp-facts li{flex-direction:column;gap:2px}
+  .pdp-facts span{text-align:left}
+}

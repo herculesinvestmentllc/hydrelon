@@ -92,5 +92,13 @@
 .ins-row .rd{font-family:var(--disp);font-weight:500;font-size:14px;color:var(--blue);display:flex;align-items:center;gap:6px;white-space:nowrap}
 .ins-row .rd svg{width:14px;height:14px;transition:.25s}
 .ins-row:hover .rd svg{transform:translateX(4px)}
-/* visuals removed 2026-09-24: text-only layout until new product imagery */
+/* about stays text-only; .perf-grid gets its image column back below */
 .perf-grid,.about-grid{grid-template-columns:1fr}
+
+/* product image beside the metrics (2026-09-25) */
+.perf-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
+.perf-cta{margin-top:26px}
+.perf-product{display:flex;justify-content:center;align-items:center;background:radial-gradient(circle at 50% 45%,#fff 0%,#eaf3fb 72%);border-radius:28px;padding:34px;box-shadow:var(--sh1)}
+.perf-product img{max-height:460px;width:auto;filter:drop-shadow(0 24px 30px rgba(17,84,199,.18));transition:transform .5s}
+.perf-product:hover img{transform:translateY(-6px) rotate(-1.5deg)}
+@media(max-width:1000px){.perf-product{order:-1}.perf-product img{max-height:320px}}
