@@ -34,8 +34,21 @@ nav.menu a:hover::after{width:calc(100% - 26px)}
 .drawer .panel a .n{font-size:14px;color:var(--cyan);letter-spacing:.1em}
 .drawer .panel .dcta{margin-top:26px;display:flex;flex-direction:column;gap:12px}
 
-.brand-lockup{height:20px;width:auto;flex:none;transition:height .4s}
-header.nav.scrolled .brand-lockup{height:17px}
+.brand-lockup{height:13px;width:auto;flex:none;transition:height .4s}
+header.nav.scrolled .brand-lockup{height:11px}
+
+/* logo glow: a soft blue halo that breathes, plus a white-blue light sweep
+   clipped to the logo's own shape (mask = the same SVG) */
+.brand{position:relative;line-height:0}
+.brand-lockup{animation:logoHalo 4.8s ease-in-out infinite}
+.brand::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.95) 46%,rgba(120,205,255,.85) 52%,transparent 68%) 150% 0/250% 100% no-repeat;
+  -webkit-mask:url(../img/hydrelon-logo.svg) left center/auto 100% no-repeat;
+          mask:url(../img/hydrelon-logo.svg) left center/auto 100% no-repeat;
+  animation:logoSweep 4.8s ease-in-out infinite}
+@keyframes logoHalo{0%,100%{filter:drop-shadow(0 0 0 rgba(0,181,232,0))}50%{filter:drop-shadow(0 0 5px rgba(0,181,232,.55)) drop-shadow(0 0 12px rgba(120,205,255,.35))}}
+@keyframes logoSweep{0%,35%{background-position:150% 0}75%,100%{background-position:-60% 0}}
+@media (prefers-reduced-motion:reduce){.brand-lockup,.brand::after{animation:none}.brand::after{display:none}}
 
 /* full-bleed header: logo sits at the left edge */
 header.nav .nav-inner{max-width:none;padding:0 clamp(20px,3vw,48px)}

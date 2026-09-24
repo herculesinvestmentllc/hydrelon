@@ -1,10 +1,10 @@
 /* hero */
 .hero{position:relative;padding:54px 0 110px;overflow:hidden}
-.hero-glow{position:absolute;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:0;
+.hero-glow{position:absolute;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:1;
   background:radial-gradient(circle,rgba(0,181,232,.20),rgba(123,92,246,.10) 40%,transparent 70%);
   transform:translate(-50%,-50%);transition:opacity .4s;opacity:0;filter:blur(8px)}
 .hero:hover .hero-glow{opacity:1}
-.bubbles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bubbles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
 .bubble{position:absolute;bottom:-40px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.7),rgba(0,181,232,.12));border:1px solid rgba(0,181,232,.18);animation:rise linear infinite}
 @keyframes rise{0%{transform:translateY(0) scale(.8);opacity:0}10%{opacity:.7}90%{opacity:.5}100%{transform:translateY(-105vh) scale(1.1);opacity:0}}
 .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.04fr .96fr;gap:54px;align-items:center}
@@ -19,8 +19,19 @@
 @keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,10px)}}
 .wave-div{position:absolute;left:0;right:0;bottom:-1px;z-index:1;line-height:0}
 
-/* hero is text-only since 2026-09-24 (intro image removed) */
-.hero{min-height:min(78vh,760px);display:flex;align-items:center}
-.hero-grid{grid-template-columns:1fr;justify-items:center;text-align:center}
-.hero p.lead{margin-left:auto;margin-right:auto}
-.hero-cta{justify-content:center}
+/* hero with full-bleed water image (2026-09-25): the image sits behind the
+   transparent header, the sphere fills the right, copy stays left */
+.hero{min-height:min(100vh,860px);display:flex;align-items:center;margin-top:-86px;padding:140px 0 120px}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:70% center}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(90deg,rgba(244,249,253,.72) 0%,rgba(244,249,253,.35) 38%,rgba(244,249,253,0) 58%)}
+.hero{background:#eef5fb}
+.hero>.wrap{width:100%}
+.hero-grid{grid-template-columns:minmax(0,600px);justify-content:start}
+@media(max-width:1000px){
+  .hero{min-height:auto;padding:120px 0 min(92vw,440px)}
+  .hero-bg{top:auto;height:min(105vw,520px)}
+  .hero-bg img{object-position:79% center}
+  .hero::before{background:linear-gradient(180deg,#eef5fb 0%,#eef5fb calc(100% - min(105vw,520px)),rgba(238,245,251,0) calc(100% - min(105vw,520px) + 90px))}
+}
