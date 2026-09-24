@@ -3,5 +3,6 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/hydrelon01/public_html/
     - /bin/cp -R /home/hydrelon01/hydrelon/index.html $DEPLOYPATH
+    - /bin/cp /home/hydrelon01/hydrelon/privacy.html /home/hydrelon01/hydrelon/terms.html $DEPLOYPATH
     - /bin/mkdir -p $DEPLOYPATH/assets
     - /bin/cp -R /home/hydrelon01/hydrelon/assets/. $DEPLOYPATH/assets/

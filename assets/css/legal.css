@@ -1,0 +1,17 @@
+/* privacy.html, terms.html */
+.legal-head{border-bottom:1px solid var(--line);background:rgba(251,253,255,.9)}
+.legal-head .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+.legal-logo{height:13px;width:auto}
+.legal-back{font-size:16px;color:var(--muted)}
+.legal-back:hover{color:var(--blue)}
+.legal-main{max-width:760px;padding-top:64px;padding-bottom:96px}
+.legal-main h1{font-size:clamp(40px,6vw,60px);margin:14px 0 8px}
+.legal-date{color:var(--muted2);font-size:16px;margin-bottom:36px}
+.legal-main h2{font-size:28px;margin:40px 0 10px}
+.legal-main p,.legal-main li{color:#3c4a64;font-size:19px}
+.legal-main ul{padding-left:1.2em;list-style:disc}
+.legal-main li{margin:8px 0}
+.legal-main a{color:var(--blue);text-decoration:underline;text-underline-offset:3px}
+.legal-foot{border-top:1px solid var(--line);padding:26px 0;font-size:15px;color:var(--muted)}
+.legal-foot .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.legal-foot a:hover{color:var(--blue)}
